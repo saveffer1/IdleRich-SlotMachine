@@ -14,3 +14,6 @@ config.read(os.path.join('data', 'config.ini'))
 SCREEN_WIDTH = config.getint('GRAPHIC', 'SCREEN_WIDTH')
 SCREEN_HEIGHT = config.getint('GRAPHIC', 'SCREEN_HEIGHT')
 # TILE_SIZE = config.getint('GRAPHIC', 'TILE_SIZE')
+
+# load save file
+SAVEPATH = os.path.join('data', 'savefile.sav')

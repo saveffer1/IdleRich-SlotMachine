@@ -204,8 +204,7 @@ class MainMenu:
     def credit(self):
         self.credit_menu.open()
     
-    def main_menu(self): #TODO: Add new background, decorate menu
-        def draw_menu_btn(text, width:int=250, height:int=50, x:int=0, y:int=0, border:int=12):
+    def draw_menu_btn(self, text, width:int=250, height:int=50, x:int=0, y:int=0, border:int=12):
             btn = Button(
                     text=text, 
                     font=FONT,
@@ -220,7 +219,8 @@ class MainMenu:
             btn.set_elevate(elevation=5)
             btn.draw()
             return btn
-            
+    
+    def open(self): #TODO: Add new background, decorate menu
         while True:
             rt_width = pygame.display.Info().current_w
             rt_height = pygame.display.Info().current_h
@@ -232,13 +232,14 @@ class MainMenu:
                         )
             menutext.draw()
 
-            btn_play = draw_menu_btn('Play', x=rt_width-400, y=200, width=250, height=50)
-            btn_option = draw_menu_btn('Options', x=rt_width-400, y=300, width=250, height=50)
-            btn_credit = draw_menu_btn('Credit', x=rt_width-400, y=400, width=250, height=50)
-            btn_exit = draw_menu_btn('Exit', x=rt_width-400, y=500, width=250, height=50)
+            btn_play = self.draw_menu_btn('Play', x=rt_width-400, y=200, width=250, height=50)
+            btn_option = self.draw_menu_btn('Options', x=rt_width-400, y=300, width=250, height=50)
+            btn_credit = self.draw_menu_btn('Credit', x=rt_width-400, y=400, width=250, height=50)
+            btn_exit = self.draw_menu_btn('Exit', x=rt_width-400, y=500, width=250, height=50)
             
             self.mouse_clicked = False
             for event in pygame.event.get():
+                MainGame.handle_pygame_event(event)
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         pass

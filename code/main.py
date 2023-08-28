@@ -16,8 +16,7 @@ class Game:
         self.main_menu = MainMenu()
             
     def run(self):
-        self.main_menu.main_menu()
-        pygame.display.update()
+        self.main_menu.open()
 
 if __name__ == '__main__':
     game = Game()
