@@ -115,10 +115,10 @@ class RangeSlider:
                  range_color: str | tuple = '#000000',
                  button_size: int=20, button_color: str | tuple = '#FF0000',
                  font: str=None, font_size: int=30, font_color: str | tuple='#000000',
-                 show_min_max: bool=True, call_func=None
+                 show_min_max: bool=True, callback=None
         ):
         self.surface = pygame.display.get_surface()
-        self.call_func = call_func
+        self.callback = callback
         
         self.dragging = False
         
@@ -154,9 +154,7 @@ class RangeSlider:
 
 
     def draw(self):
-        self.update()
         self.render()
-        pygame.display.flip()
 
     def render(self):
         pygame.draw.rect(self.surface, self.range_color, (self.x, self.y - self.range_height // 2, self.range_width, self.range_height))
@@ -190,5 +188,51 @@ class RangeSlider:
                 self.dragging = True
         elif event.type == pygame.MOUSEBUTTONUP and self.dragging:
             self.dragging = False
-            if self.call_func:
-                self.call_func(self.value)
+            if self.callback:
+                self.callback(self.value)
+
+class ToggleSwitch:
+    def __init__(self, x, y, width, height, state_text:bool=False, font: str=None, font_size: int=30, callback=None):
+        self.surface = pygame.display.get_surface()
+        self.rect = pygame.Rect(x, y, width, height)
+        
+        self.text_color = "#000000"
+        self.text_on_color = "#000000"
+        self.text_off_color = "#000000"
+        self.on_color = "#00FF00"
+        self.off_color = "#FF0000"
+        self.circle_color = "#FFFFFF"
+        self.text_on = "ON"
+        self.text_off = "OFF"
+        self.state_text = state_text
+        
+        self.is_on = False
+        self.callback = callback
+        self.circle_x = self.rect.x + 20
+        
+        if font is None:
+            self.font = pygame.font.SysFont('Arial', font_size)
+        else:
+            self.font = pygame.font.Font(font, font_size)
+
+    def draw(self):
+        # draw on off centered on the switch
+        if self.state_text:
+            state_label = self.text_on if self.is_on else self.text_off
+            state_surface = self.font.render(state_label, True, self.text_on_color if self.is_on else self.text_off_color)
+            state_rect = state_surface.get_rect(center=self.rect.center)
+            self.surface.blit(state_surface, state_rect)
+        
+        # Draw the switch background
+        pygame.draw.rect(self.surface, self.on_color if self.is_on else self.off_color, self.rect, border_radius=self.rect.height // 2)
+        
+        # Draw the circle indicator
+        pygame.draw.circle(self.surface, self.circle_color, (self.circle_x, self.rect.y + self.rect.height // 2), self.rect.height // 2 - 2)
+        
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                self.is_on = not self.is_on
+                if self.callback:
+                    self.callback(self.is_on)
+                self.circle_x = self.rect.x + self.rect.width - 20 if self.is_on else self.rect.x + 20
