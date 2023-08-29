@@ -152,11 +152,7 @@ class RangeSlider:
             self.value = min_value
             self.thumb_position = x
 
-
     def draw(self):
-        self.render()
-
-    def render(self):
         pygame.draw.rect(self.surface, self.range_color, (self.x, self.y - self.range_height // 2, self.range_width, self.range_height))
         pygame.draw.circle(self.surface, self.button_color, (self.thumb_position, self.y), self.button_size // 2)
 
