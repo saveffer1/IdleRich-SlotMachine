@@ -1,5 +1,6 @@
 import pygame
-        
+from pygame import gfxdraw
+
 class Label:
     def __init__(self, text, font:str=None, font_size:int=30, color:str|tuple='#FFFFFF', x:int=0, y:int=0):
         self.surface = pygame.display.get_surface()
@@ -188,7 +189,7 @@ class RangeSlider:
                 self.callback(self.value)
 
 class ToggleSwitch:
-    def __init__(self, x, y, width, height, state_text:bool=False, font: str=None, font_size: int=30, callback=None):
+    def __init__(self, x, y, width, height, start_state:bool=False, state_text:bool=False, font: str=None, font_size: int=30, callback=None):
         self.surface = pygame.display.get_surface()
         self.rect = pygame.Rect(x, y, width, height)
         
@@ -202,9 +203,15 @@ class ToggleSwitch:
         self.text_off = "OFF"
         self.state_text = state_text
         
-        self.is_on = False
+        self.circle_direction = 25
+
+        self.is_on = start_state
+        if self.is_on:
+            self.circle_x = self.rect.x + self.rect.width - self.circle_direction
+        else:
+            self.circle_x = self.rect.x + self.circle_direction
+        
         self.callback = callback
-        self.circle_x = self.rect.x + 20
         
         if font is None:
             self.font = pygame.font.SysFont('Arial', font_size)
@@ -223,12 +230,13 @@ class ToggleSwitch:
         pygame.draw.rect(self.surface, self.on_color if self.is_on else self.off_color, self.rect, border_radius=self.rect.height // 2)
         
         # Draw the circle indicator
-        pygame.draw.circle(self.surface, self.circle_color, (self.circle_x, self.rect.y + self.rect.height // 2), self.rect.height // 2 - 2)
-        
+        # pygame.draw.circle(self.surface, self.circle_color, (self.circle_x, self.rect.y + self.rect.height // 2), self.rect.height // 2 - 2)
+        gfxdraw.filled_circle(self.surface, self.circle_x, self.rect.y + self.rect.height // 2, self.rect.height // 2 - 2, pygame.Color(self.circle_color))
+
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
                 self.is_on = not self.is_on
                 if self.callback:
                     self.callback(self.is_on)
-                self.circle_x = self.rect.x + self.rect.width - 20 if self.is_on else self.rect.x + 20
+                self.circle_x = self.rect.x + self.rect.width - self.circle_direction if self.is_on else self.rect.x + self.circle_direction
