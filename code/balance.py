@@ -88,15 +88,16 @@ class Balance:
         self.amount += clicked_balance
         self.clicked_balance += clicked_balance
     
-    def add_transaction(self, transaction_amount: int, transaction_detail: str="What is this?", transaction_date: str=datetime.now().strftime("%d/%m/%Y-%H:%M:%S")):
+    def add_transaction(self, transaction_amount: int, transaction_detail: str="What is this?", transaction_date: str=datetime.now().strftime("%d/%m/%Y-%H:%M:%S")) -> bool:
         if transaction_amount < 0:
             if self.amount + transaction_amount < 0:
-                return None
+                return False
         self.amount += transaction_amount
         transaction_th = threading.Thread(target=self.transactions.insert, args=(transaction_amount, transaction_detail, transaction_date))
         transaction_th.daemon = True
         transaction_th.start()
         transaction_th.join()
+        return True
     
     def search_transaction(self, word: str, mode: str="detail"):
         if mode not in ["detail", "date", "amount"]:
@@ -131,11 +132,11 @@ class Balance:
         for suffix in suffixes:
             if abs(amount) < 1000:
                 if abs(amount) >= 10:
-                    return f"฿ {amount:,.0f} {suffix}"
+                    return f"฿ {amount:,.2f} {suffix}"
                 else:
-                    return f"฿ {amount:,.1f} {suffix}"
+                    return f"฿ {amount:,.2f} {suffix}"
             amount /= 1000.0
-        return f"฿ {amount:,.1f} {'Q'}"
+        return f"฿ {amount:,.2f} {'Q'}"
 
     def get_balance(self):
         return self.amount
@@ -147,7 +148,10 @@ class Balance:
 # test
 if __name__ == "__main__":
     bp = Balance(1000)
-    for i in range(5):
-        bp.add_transaction(100)
-
-    print(bp.search_transaction("wha", mode="detail"))
+    
+    while True:
+        x = input("Enter amount: ")
+        if x == "exit":
+            break
+        bp.add_transaction(int(x))
+        print(bp)
