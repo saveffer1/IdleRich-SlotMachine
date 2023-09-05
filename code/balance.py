@@ -149,11 +149,4 @@ class Balance:
 
 # test
 if __name__ == "__main__":
-    bp = Balance(1000)
-    
-    while True:
-        x = input("Enter amount: ")
-        if x == "exit":
-            break
-        bp.add_transaction(int(x))
-        print(bp)
+    raise RuntimeError("This module is not meant to run on its own!")
