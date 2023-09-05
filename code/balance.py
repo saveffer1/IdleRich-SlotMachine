@@ -39,6 +39,7 @@ class TransactionHistory:
         self.transactions_by_detail = TransactionTrie()
         self.transactions_by_amount = {}
         self.recent_transactions = deque(maxlen=30)
+        self.all_transactions = []
 
     def insert(self, amount: int, detail: str, date: str=datetime.now().strftime("%d/%m/%Y-%H:%M:%S")):
         detail = detail.lower()
@@ -54,11 +55,12 @@ class TransactionHistory:
         else:
             self.transactions_by_amount[amount_str] = [transaction]
         
+        self.all_transactions.append(transaction)
         self.recent_transactions.append(transaction)
     
     def transaction_history(self, limit:int=5) -> tuple:
         if limit <= 0:
-            raise ValueError("Limit must be greater than 0")
+            raise ValueError("Limit must be greater than 0 and less than 30")
         if limit > self.recent_transactions.maxlen:
             limit = self.recent_transactions.maxlen
         if limit > len(self.recent_transactions):
