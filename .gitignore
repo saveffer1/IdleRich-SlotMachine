@@ -1,6 +1,9 @@
 # Temp code runner
 tempCodeRunnerFile.*
 
+# test file
+test.*
+
 # save game
 *.sav
 
