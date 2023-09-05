@@ -15,7 +15,7 @@ class PowerUp:
                 self.level += 1
         else:
             self.level += 1
-            self.update_power()
+        self.update_power()
     
     def update_power(self):
         pass
